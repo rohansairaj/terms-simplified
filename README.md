@@ -18,9 +18,15 @@ An AI-powered tool that converts complex legal text into simple, easy-to-read su
 - Risk detection (auto-renewals, data sharing)
 - Simple language output
 - Verdict system (Safe / Caution / Risky)
+- File Upload Support
 
 ## Example Output
 (Add screenshot here)
+
+## Error Handling
+- Unsupported file types are rejected
+- Empty or unreadable files are flagged
+- File size limits applied
 
 ## Success Metrics
 - Reading time < 60 seconds
@@ -30,6 +36,7 @@ An AI-powered tool that converts complex legal text into simple, easy-to-read su
 ## Limitations
 - May miss nuanced legal clauses
 - Depends on input quality
+- Supported formats include PDF (.pdf) and Word (.doc, .docx) only
 
 ## Future Improvements
 - Chrome extension
