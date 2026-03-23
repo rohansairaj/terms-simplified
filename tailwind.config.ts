@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        display: ['DM Serif Display', 'serif'],
+        body: ['DM Sans', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -46,6 +50,18 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        safe: {
+          DEFAULT: "hsl(var(--safe))",
+          foreground: "hsl(var(--safe-foreground))",
+        },
+        caution: {
+          DEFAULT: "hsl(var(--caution))",
+          foreground: "hsl(var(--caution-foreground))",
+        },
+        risky: {
+          DEFAULT: "hsl(var(--risky))",
+          foreground: "hsl(var(--risky-foreground))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
