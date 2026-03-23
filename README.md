@@ -1,4 +1,4 @@
-# terms-literate
+# terms-simplified
 
 Understand Terms & Conditions in under 60 seconds.
 
