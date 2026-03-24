@@ -92,39 +92,22 @@ const TermsInput = ({ onSubmit, isLoading }: TermsInputProps) => {
               Paste text or upload a file
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            {fileName && (
-              <span className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-body font-medium text-secondary-foreground">
-                <FileText className="h-3 w-3" />
-                {fileName}
-                <button onClick={clearFile} className="ml-1 hover:text-destructive">
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
-            )}
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              className="hidden"
-              onChange={onFileChange}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              disabled={extracting || isLoading}
-              onClick={() => fileRef.current?.click()}
-              className="gap-1.5 rounded-xl text-xs font-body"
-            >
-              {extracting ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Upload className="h-3.5 w-3.5" />
-              )}
-              {extracting ? "Reading…" : "Upload File"}
-            </Button>
-          </div>
+          {fileName && (
+            <span className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-body font-medium text-secondary-foreground">
+              <FileText className="h-3 w-3" />
+              {fileName}
+              <button onClick={clearFile} className="ml-1 hover:text-destructive">
+                <X className="h-3 w-3" />
+              </button>
+            </span>
+          )}
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            className="hidden"
+            onChange={onFileChange}
+          />
         </div>
 
         {/* Error banner */}
