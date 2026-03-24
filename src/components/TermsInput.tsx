@@ -139,6 +139,21 @@ const TermsInput = ({ onSubmit, isLoading }: TermsInputProps) => {
           className="min-h-[200px] resize-none border-0 bg-transparent px-4 py-3 text-base font-body placeholder:text-muted-foreground/50 focus-visible:ring-0 focus-visible:ring-offset-0"
         />
         <div className="flex items-center justify-between px-4 pb-3 pt-1">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={extracting || isLoading}
+            onClick={() => fileRef.current?.click()}
+            className="gap-1.5 rounded-xl text-xs font-body"
+          >
+            {extracting ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Upload className="h-3.5 w-3.5" />
+            )}
+            {extracting ? "Reading…" : "Upload File"}
+          </Button>
           <span className="text-xs text-muted-foreground font-body">
             {wordCount} words
           </span>

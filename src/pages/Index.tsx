@@ -73,7 +73,7 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground font-body">
-        Literate Terms — Making legal text human‑readable.
+        Terms Simplified — Making legal text human‑readable.
       </footer>
     </div>
   );
