@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
+import { toast } from "sonner";
 import TermsInput from "@/components/TermsInput";
 import ResultsDisplay, { type AnalysisResult } from "@/components/ResultsDisplay";
-import { mockAnalyze } from "@/lib/mockAnalysis";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,10 +13,27 @@ const Index = () => {
   const handleSubmit = async (text: string) => {
     setIsLoading(true);
     setResult(null);
-    // Simulate AI delay — replace with real edge function call
-    await new Promise((r) => setTimeout(r, 2000));
-    setResult(mockAnalyze());
-    setIsLoading(false);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("simplify-terms", {
+        body: { text },
+      });
+
+      if (error) {
+        throw new Error(error.message || "Failed to analyze terms");
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      setResult(data as AnalysisResult);
+    } catch (e: any) {
+      console.error("Analysis error:", e);
+      toast.error(e.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
