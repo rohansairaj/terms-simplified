@@ -74,6 +74,7 @@ serve(async (req) => {
 
   try {
     const { text, language = "english" } = await req.json();
+    console.log("Received request - language:", language, "text length:", text?.length);
 
     if (!text || typeof text !== "string" || text.trim().length < 20) {
       return new Response(
