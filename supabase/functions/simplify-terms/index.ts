@@ -143,7 +143,7 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: language === "english" ? "google/gemini-2.5-flash" : "openai/gpt-5-mini",
         messages: [
           { role: "system", content: prompt.system },
           ...(prompt.fewShot ? [
