@@ -101,22 +101,12 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-
-    // Extract from tool call response
-    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
-    if (!toolCall) {
-      // Fallback: try to parse content directly
-      const content = data.choices?.[0]?.message?.content;
-      if (content) {
-        const parsed = JSON.parse(content);
-        return new Response(JSON.stringify(parsed), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) {
       throw new Error("No valid response from AI");
     }
 
-    const analysis = JSON.parse(toolCall.function.arguments);
+    const analysis = JSON.parse(content);
 
     return new Response(JSON.stringify(analysis), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
