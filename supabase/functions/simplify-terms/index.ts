@@ -97,14 +97,12 @@ serve(async (req) => {
 
     // Step 2: Translate if needed
     if (language !== "english" && translationPrompts[language]) {
-      console.log("Translating to:", language);
       analysis = await callAI(
         LOVABLE_API_KEY,
         "google/gemini-2.5-flash",
         translationPrompts[language],
         JSON.stringify(analysis)
       );
-      console.log("Translation result sample:", JSON.stringify(analysis).substring(0, 200));
     }
 
     return new Response(JSON.stringify(analysis), {
