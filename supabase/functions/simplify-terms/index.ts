@@ -62,6 +62,10 @@ serve(async (req) => {
     // Truncate very long texts to avoid token limits
     const truncated = text.trim().slice(0, 30000);
 
+    const langNote = language !== "english"
+      ? `\n\nCRITICAL LANGUAGE REQUIREMENT: You MUST write ALL string values (summary bullets, agreements, risks) in ${language === "hindi" ? "Hindi (हिन्दी) using Devanagari script" : "Tamil (தமிழ்) using Tamil script"}. The verdict and readingTime values stay in English. Every other string MUST be in ${language === "hindi" ? "Hindi" : "Tamil"}, NOT English.`
+      : "";
+
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -69,47 +73,12 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: buildSystemPrompt(language) },
-          { role: "user", content: `Analyze and simplify these terms & conditions. ${language !== "english" ? `CRITICAL: You MUST write ALL string values in ${language === "hindi" ? "Hindi (हिन्दी) using Devanagari script" : "Tamil (தமிழ்) using Tamil script"}. Do NOT write in English except for the verdict field and readingTime field.` : ""}\n\n${truncated}` },
+          { role: "user", content: `Analyze and simplify these terms & conditions:${langNote}\n\n${truncated}` },
         ],
-        tools: [
-          {
-            type: "function",
-            function: {
-              name: "return_analysis",
-              description: "Return the structured analysis of the terms & conditions",
-              parameters: {
-                type: "object",
-                properties: {
-                  readingTime: { type: "string", description: "Estimated reading time" },
-                  riskScore: { type: "number", minimum: 1, maximum: 10 },
-                  verdict: { type: "string", enum: ["Safe", "Caution", "Risky"] },
-                  summary: {
-                    type: "array",
-                    items: { type: "string" },
-                    maxItems: 5,
-                    description: "Max 5 bullet points summarizing the key points",
-                  },
-                  agreements: {
-                    type: "array",
-                    items: { type: "string" },
-                    description: "What the user is agreeing to",
-                  },
-                  risks: {
-                    type: "array",
-                    items: { type: "string" },
-                    description: "Risks like hidden charges, auto-renewals, data sharing",
-                  },
-                },
-                required: ["readingTime", "riskScore", "verdict", "summary", "agreements", "risks"],
-                additionalProperties: false,
-              },
-            },
-          },
-        ],
-        tool_choice: { type: "function", function: { name: "return_analysis" } },
+        response_format: { type: "json_object" },
       }),
     });
 
