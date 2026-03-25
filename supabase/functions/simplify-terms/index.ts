@@ -6,7 +6,15 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SYSTEM_PROMPT = `You are a legal-text simplifier. Your job is to read Terms & Conditions (or any legal document) and rewrite it so a 12-year-old can understand it. The simplified version must be readable in under 60 seconds.
+const languageInstructions: Record<string, string> = {
+  english: "Write ALL output text in English.",
+  hindi: "Write ALL output text (summary bullets, agreements, risks) in Hindi (हिन्दी). Use Devanagari script. The JSON keys must remain in English but all string values must be in Hindi. Ensure accurate, natural Hindi — not machine-translated.",
+  tamil: "Write ALL output text (summary bullets, agreements, risks) in Tamil (தமிழ்). Use Tamil script. The JSON keys must remain in English but all string values must be in Tamil. Ensure accurate, natural Tamil — not machine-translated.",
+};
+
+const buildSystemPrompt = (language: string) => `You are a legal-text simplifier. Your job is to read Terms & Conditions (or any legal document) and rewrite it so a 12-year-old can understand it. The simplified version must be readable in under 60 seconds.
+
+${languageInstructions[language] || languageInstructions.english}
 
 You MUST respond using the following JSON structure exactly — no extra keys, no markdown, just valid JSON:
 
@@ -26,7 +34,8 @@ Rules:
 - agreements: list what the user is agreeing to
 - risks: list hidden charges, auto-renewals, data sharing, lawsuit waivers, etc.
 - riskScore: 1 = very safe, 10 = very risky
-- verdict: "Safe" if score ≤ 3, "Caution" if 4-6, "Risky" if ≥ 7
+- verdict: "Safe" if score ≤ 3, "Caution" if 4-6, "Risky" if ≥ 7 (keep verdict values in English)
+- readingTime value should also be in English (e.g. "~40 sec")
 - Keep each bullet under 25 words
 - Be honest — if the terms are bad, say so clearly`;
 
@@ -36,7 +45,7 @@ serve(async (req) => {
   }
 
   try {
-    const { text } = await req.json();
+    const { text, language = "english" } = await req.json();
 
     if (!text || typeof text !== "string" || text.trim().length < 20) {
       return new Response(
@@ -62,7 +71,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: buildSystemPrompt(language) },
           { role: "user", content: `Analyze and simplify these terms & conditions:\n\n${truncated}` },
         ],
         tools: [
