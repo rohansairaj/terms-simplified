@@ -72,7 +72,7 @@ serve(async (req) => {
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: buildSystemPrompt(language) },
-          { role: "user", content: `Analyze and simplify these terms & conditions:\n\n${truncated}` },
+          { role: "user", content: `Analyze and simplify these terms & conditions. ${language !== "english" ? `CRITICAL: You MUST write ALL string values in ${language === "hindi" ? "Hindi (हिन्दी) using Devanagari script" : "Tamil (தமிழ்) using Tamil script"}. Do NOT write in English except for the verdict field and readingTime field.` : ""}\n\n${truncated}` },
         ],
         tools: [
           {
