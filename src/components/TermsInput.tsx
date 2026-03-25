@@ -1,17 +1,27 @@
 import { useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { FileText, Loader2, Sparkles, Upload, X, AlertCircle } from "lucide-react";
+import { FileText, Loader2, Sparkles, Upload, X, AlertCircle, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { extractTextFromFile } from "@/lib/fileExtractor";
 
+export type OutputLanguage = "english" | "hindi" | "tamil";
+
 interface TermsInputProps {
-  onSubmit: (text: string) => void;
+  onSubmit: (text: string, language: OutputLanguage) => void;
   isLoading: boolean;
 }
 
+const languageLabels: Record<OutputLanguage, string> = {
+  english: "English",
+  hindi: "हिन्दी (Hindi)",
+  tamil: "தமிழ் (Tamil)",
+};
+
 const TermsInput = ({ onSubmit, isLoading }: TermsInputProps) => {
   const [text, setText] = useState("");
+  const [language, setLanguage] = useState<OutputLanguage>("english");
   const [dragOver, setDragOver] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
@@ -20,7 +30,7 @@ const TermsInput = ({ onSubmit, isLoading }: TermsInputProps) => {
 
   const handleSubmit = () => {
     if (text.trim().length > 20) {
-      onSubmit(text.trim());
+      onSubmit(text.trim(), language);
     }
   };
 
@@ -138,22 +148,37 @@ const TermsInput = ({ onSubmit, isLoading }: TermsInputProps) => {
           placeholder="Copy and paste the full Terms & Conditions text here, or drag & drop a PDF / Word file above."
           className="min-h-[200px] resize-none border-0 bg-transparent px-4 py-3 text-base font-body placeholder:text-muted-foreground/50 focus-visible:ring-0 focus-visible:ring-offset-0"
         />
-        <div className="flex items-center justify-between px-4 pb-3 pt-1">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            disabled={extracting || isLoading}
-            onClick={() => fileRef.current?.click()}
-            className="gap-1.5 rounded-xl text-xs font-body"
-          >
-            {extracting ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Upload className="h-3.5 w-3.5" />
-            )}
-            {extracting ? "Reading…" : "Upload File"}
-          </Button>
+        <div className="flex items-center justify-between gap-2 px-4 pb-3 pt-1">
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={extracting || isLoading}
+              onClick={() => fileRef.current?.click()}
+              className="gap-1.5 rounded-xl text-xs font-body"
+            >
+              {extracting ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Upload className="h-3.5 w-3.5" />
+              )}
+              {extracting ? "Reading…" : "Upload File"}
+            </Button>
+            <Select value={language} onValueChange={(v) => setLanguage(v as OutputLanguage)}>
+              <SelectTrigger className="h-8 w-[150px] rounded-xl text-xs font-body gap-1.5">
+                <Globe className="h-3.5 w-3.5 text-muted-foreground" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(languageLabels) as OutputLanguage[]).map((lang) => (
+                  <SelectItem key={lang} value={lang} className="text-xs">
+                    {languageLabels[lang]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <span className="text-xs text-muted-foreground font-body">
             {wordCount} words
           </span>

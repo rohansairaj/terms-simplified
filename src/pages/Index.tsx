@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
 import { toast } from "sonner";
-import TermsInput from "@/components/TermsInput";
+import TermsInput, { type OutputLanguage } from "@/components/TermsInput";
 import ResultsDisplay, { type AnalysisResult } from "@/components/ResultsDisplay";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -10,13 +10,13 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
 
-  const handleSubmit = async (text: string) => {
+  const handleSubmit = async (text: string, language: OutputLanguage = "english") => {
     setIsLoading(true);
     setResult(null);
 
     try {
       const { data, error } = await supabase.functions.invoke("simplify-terms", {
-        body: { text },
+        body: { text, language },
       });
 
       if (error) {
