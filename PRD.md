@@ -6,7 +6,7 @@
 
 **Tech Stack: Lovable (Frontend), Supabase (Backend/Auth), AI (Summarization Engine)**
 
-**Live App:** easy-read-terms.lovable.app1. 
+**Live App:** easy-read-terms.lovable.app 
 
 **1. Executive Summary**
 - The Problem: Most consumers suffer from "click-wrap fatigue." Terms and Conditions are intentionally long, written in legalese, and hidden behind "I Accept" buttons. 99% of users agree to data-sharing and auto-renewals without knowing it.
