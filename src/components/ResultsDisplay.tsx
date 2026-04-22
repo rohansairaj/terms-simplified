@@ -1,5 +1,8 @@
 import { motion } from "framer-motion";
-import { Clock, Shield, AlertTriangle, CheckCircle, XCircle, Info, TrendingUp } from "lucide-react";
+import { Clock, Shield, AlertTriangle, CheckCircle, XCircle, Info, TrendingUp, Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export interface AnalysisResult {
   readingTime: string;
@@ -51,6 +54,33 @@ const item = {
 const ResultsDisplay = ({ result }: ResultsDisplayProps) => {
   const vc = verdictConfig[result.verdict];
   const VerdictIcon = vc.icon;
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    const text = [
+      `Reading time: ${result.readingTime}`,
+      `Risk Score: ${result.riskScore}/10`,
+      `Verdict: ${vc.label}`,
+      ``,
+      `QUICK SUMMARY`,
+      ...result.summary.map((s) => `• ${s}`),
+      ``,
+      `WHAT YOU'RE AGREEING TO`,
+      ...result.agreements.map((a) => `✓ ${a}`),
+      ``,
+      `RISKS TO WATCH OUT FOR`,
+      ...result.risks.map((r) => `⚠ ${r}`),
+    ].join("\n");
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      toast.success("Results copied to clipboard");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy");
+    }
+  };
 
   return (
     <motion.div
@@ -60,7 +90,7 @@ const ResultsDisplay = ({ result }: ResultsDisplayProps) => {
       className="w-full max-w-3xl mx-auto space-y-5 mt-8"
     >
       {/* Top bar: reading time + risk score */}
-      <motion.div variants={item} className="flex items-center gap-4 flex-wrap">
+      <motion.div variants={item} className="flex items-center gap-3 flex-wrap">
         <div className="flex items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-body font-medium text-secondary-foreground">
           <Clock className="h-4 w-4" />
           {result.readingTime} read
@@ -73,6 +103,15 @@ const ResultsDisplay = ({ result }: ResultsDisplayProps) => {
           <VerdictIcon className="h-4 w-4" />
           {vc.label}
         </div>
+        <Button
+          onClick={handleCopy}
+          variant="outline"
+          size="sm"
+          className="ml-auto rounded-full h-auto px-4 py-2 text-sm font-body"
+        >
+          {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+          {copied ? "Copied" : "Copy Results"}
+        </Button>
       </motion.div>
 
       {/* Quick Summary */}
