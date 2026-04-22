@@ -39,6 +39,7 @@
 | FR3 | Risk Detection | Auto-identify "Auto-renewals," "Data Sharing," and "Limited Liability." | P0 |
 | FR4 | Verdict System | Visual badge (Green/Yellow/Red) based on AI risk assessment. | P1 |
 | FR5 | Error Handling | Reject files >5MB or unsupported formats with user-friendly alerts. | P1 |
+| FR6  | Image Support | Support screenshots and pickup readable text to generate summary | P2 |
 
 **5. Non-Functional Requirements (MVP)**
 
@@ -62,7 +63,7 @@
 **8. Roadmap (Post-MVP)**
 - V1 - MVP + Share Result button + AI disclaimer 
 - V2 - Chrome Extension: Detect T&C pages automatically on sites like Amazon or Netflix.
-- V3 - URL Fetcher: Paste a link to a T&C page instead of uploading a file.
+- V3 - Image Upload Support + URL Fetcher: Paste a link to a T&C page instead of uploading a file.
 - V4 - Historical Comparison: Alert users when a service they already use changes its terms.
 
 **9. PM Review Comments (Strategic Insights)**
