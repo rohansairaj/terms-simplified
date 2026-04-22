@@ -20,7 +20,21 @@ const Index = () => {
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to analyze terms");
+        // Try to extract the structured error message from the edge function response
+        let message = error.message || "Failed to analyze terms";
+        try {
+          const ctx: any = (error as any).context;
+          if (ctx && typeof ctx.json === "function") {
+            const body = await ctx.json();
+            if (body?.error) message = body.error;
+          }
+        } catch {
+          // ignore parse errors, fall back to default message
+        }
+        if (/credits? exhausted|402/i.test(message)) {
+          message = "AI credits exhausted. Please add funds in your Lovable workspace settings.";
+        }
+        throw new Error(message);
       }
 
       if (data?.error) {
